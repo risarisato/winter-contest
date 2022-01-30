@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  img(src="http://localhost:8000/images/n_logo.png" alt="N予備校ロゴ" width="350" height="90")
+  h3.a 2021年度：冬のプログラミングコンテスト作品
+  div.jumbotron.my-5
+    h1.display-4 匿名ひとことチャット
+    h4.display-6 Anonymous chat
+    p.lead 匿名でチャットができるアプリです。
+    p.lead なのでGitHub認証すると意味がありませんｗ
+    tr
+    a(href="/chat").btn.btn-primary.btn-lg.m-4 匿名チャット始める
+    a(href="/login").btn.btn-secondary.btn-lg.m-4 GItHubで認証する
+    a(href="/photos/kousei").btn.btn-outline-warning.btn-lg.m-4 構成図
+    div
+      if user
+        p.h3 遊んでくれてありがとう： #{user.username} さん
+        div
+          //- こちらは、GItHub認証で表示される
+          a(href="/chat").btn.btn-primary.btn-lg.m-4 匿名チャット始める
+          a(href="/logout").btn.btn-secondary.btn-lg.m-4 ログアウトする
+        br
+        br
+        a(href="/logout") Logout-ログアウトします
+      else
+        a(href="/login") Login-ログインページ-
+
+//- 認証が出来たのでユーザ名を表示させるroutes/index.jsからuser
+ res.render('index', { title: 'Express', user: req.user });のuserから取っている

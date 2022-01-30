@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  link(rel='stylesheet', href='/stylesheets/style.css')
+  title 匿名Chat
+  h1= title
+    img(src="http://localhost:8000/images/n_logo.png" alt="N予備校ロゴ" width="350" height="90")
+    h3.a 2021年度：冬のプログラミングコンテスト作品
+  div.jumbotron.my-5
+    h1.display-4 匿名ひとことチャット
+    h4.display-6 Anonymous chat
+  span.h5.bg-warning 一言どうぞ
+  ul#messages.img-thumbnail.bg-light
+  form#form(action=)
+    a(href="/").btn.btn-outline-success.text-right.mb-1 やめる
+    input#input(autocomplete="off")
+    button 送信
+  //-- 読込むモジュール
+  script(defer, src="/socket.io/socket.io.js")
+  script(defer, src="/javascripts/app.js")

@@ -1,0 +1,152 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.依存モジュールを読み込む
+ */
+// appを読込んで
+var app = require('../app');
+// デバックモジュールがある
+var debug = require('debug')('express-study:server');
+// httpを読込んでサーバを立てている
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ * envファイルがあれば、そこからポート番号を設定する(デフォルトは3000)
+ */
+// ポートの環境変数があった場合はそれを使って、ない場合は3000にする
+// 今回は環境変数が「process.env.PORT===8000」が入っている
+var port = normalizePort(process.env.PORT || '8000');
+// サーバ起動
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ * HTTPサーバを生成
+ */
+
+var server = http.createServer(app);
+
+/**
+
+追記する
+ここが難しかった！！
+Dockerやpugを使った場合は、
+www に yarn start 時に node bin/www として実行されるファイル
+なのでここにsocketの処理を書く必要がある！
+
+*/
+
+let counter = 0; //接続者数
+
+const socket = require('socket.io');
+const io = socket(server);
+
+counter++;    // 接続者数を増やす
+
+io.on("connection",(socket) => {
+  console.log(counter + "ユーザーが接続しました");
+  // socket.onは受け取る
+  socket.on("chat message", (msg) => {
+    console.log("メッセージ:" + msg);
+    // クライアント側で送ったメッセージ送り返す＝みんなが見れる
+    io.emit("chat message", msg);
+    });
+    // ユーザ切断
+    socket.on('disconnect', function(){
+      counter--;    // 接続者数を減らす
+      console.log(counter + '切断しました');
+    });
+});
+
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+// エラー時はonError()を呼ぶ
+server.on('error', onError);
+// listen成功時はonListening()を呼ぶ
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ * 正しいポート番号かfalseを返す
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ * エラー処理(適切なログを吐き出す)
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * テキストの4-10
+ * うまく動かないので復習したらbin/wwwに追記があった
+
+
+var io = require('socket.io')(server);
+var os = require('os');
+
+function emitServerStatus(socket) {
+  socket.emit('server-status', { loadavg: os.loadavg() });
+  console.log('server-status event emitted.');
+}
+
+io.on('connection', function (socket) {
+  setInterval(emitServerStatus, 10, socket);
+});
+ */
+
+/**
+ * Event listener for HTTP server "listening" event.
+ * 正常系処理(適切なログを吐き出す)
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

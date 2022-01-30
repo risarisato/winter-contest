@@ -1,0 +1,7 @@
+{
+  "name": "express-study",
+  "description": "匿名ひとことチャット",
+  "logo": "",
+  "keywords": ["node"],
+  "image": "heroku/nodejs"
+}

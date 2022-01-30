@@ -1,0 +1,19 @@
+//-- pugは継承できる
+//-- layout.pugが全体像
+extends layout
+
+block content
+  a(href="/auth/github").btn.btn-info.my-5 Login with GitHub -ここがログインページです-
+  h2 だから、匿名なんですけど！
+
+//--【app.js】からのファイルを読込んでいる
+//--   外部認証のログインページ
+//--app.get('/login', function (req, res) {
+//--  // renderファイルでloginを返すでpugファイルが必要
+//--  res.render('login');
+//--});
+//-- 継承、views/layout.pug の content というブロックだけを 書き換える
+
+
+
+//-- このページはいらない！
