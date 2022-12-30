@@ -63,7 +63,7 @@ io.on("connection",(socket) => {
 /**
  * Listen on provided port, on all network interfaces.
  */
-
+// サーバ起動
 server.listen(port);
 // エラー時はonError()を呼ぶ
 server.on('error', onError);
